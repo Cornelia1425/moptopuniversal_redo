@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { NavLink, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { interviews, showcaseVideos, students, teachers } from './data/content'
+import { directorBiosBySlug } from './data/directorBios'
 
 function HomePage() {
   return (
@@ -12,9 +13,14 @@ function HomePage() {
       <div className="home-logo-bg" aria-hidden="true" />
       <div className="hero-overlay">
         <div className="hero-bottom-row">
-          <p className="hero-text">
-            NYC street and social style dance training rooted in culture.
-          </p>
+          <div className="hero-text-block">
+            <p className="hero-text-lead">The MOPTOP Universal Professional Program</p>
+            <p className="hero-text-body">
+              brings together some of the leaders in the street and club dance scene in New York to offer
+              new Street and Club Dance Open Class programming and the 3-month / 6-month MOPTOP Universal
+              Professional Program.
+            </p>
+          </div>
           <NavLink to="/teachers" className="action-link hero-cta">
             Meet Directors
           </NavLink>
@@ -24,23 +30,48 @@ function HomePage() {
   )
 }
 
-function DirectorsPage() {
+const DIRECTORS_LAYOUT_VERSION = 2
+
+function DirectorCard({ teacher }) {
   return (
-    <section className="directors-page" aria-label="Directors">
+    <NavLink
+      to={`/teachers/${teacher.slug}`}
+      className="director-card-link"
+    >
+      <img src={`/images/${teacher.profileImg}`} alt="" className="director-circle-img" />
+      <span className="director-name">{teacher.name}</span>
+    </NavLink>
+  )
+}
+
+function DirectorsPage() {
+  const layoutClass =
+    DIRECTORS_LAYOUT_VERSION === 2 ? 'directors-page--v2' : 'directors-page--v1'
+
+  return (
+    <section className={`directors-page ${layoutClass}`} aria-label="Directors">
       <div className="home-logo-bg" aria-hidden="true" />
       <div className="directors-row-wrap">
-        <div className="directors-row">
-          {teachers.map((teacher) => (
-            <NavLink
-              key={teacher.id}
-              to={`/teachers/${teacher.slug}`}
-              className="director-circle-link"
-              title={teacher.name}
-            >
-              <img src={`/images/${teacher.profileImg}`} alt={teacher.name} className="director-circle-img" />
-            </NavLink>
-          ))}
-        </div>
+        {DIRECTORS_LAYOUT_VERSION === 2 ? (
+          <div className="directors-grid">
+            <div className="directors-row directors-row-top">
+              {teachers.slice(0, 4).map((teacher) => (
+                <DirectorCard key={teacher.id} teacher={teacher} />
+              ))}
+            </div>
+            <div className="directors-row directors-row-bottom">
+              {teachers.slice(4).map((teacher) => (
+                <DirectorCard key={teacher.id} teacher={teacher} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="directors-row">
+            {teachers.map((teacher) => (
+              <DirectorCard key={teacher.id} teacher={teacher} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
@@ -54,13 +85,17 @@ function DirectorDetailPage() {
     return <Navigate to="/teachers" replace />
   }
 
+  const bio = directorBiosBySlug[slug]
+
   return (
-    <section className="page">
-      <h1>{teacher.name}</h1>
-      <a href={teacher.instagram} target="_blank" rel="noreferrer" className="external-link">
-        Open Instagram
-      </a>
+    <section className="page director-detail-page">
       <img src={`/images/${teacher.profileImg}`} alt={teacher.name} className="profile-image detail-profile" />
+      <h1>
+        <a href={teacher.instagram} target="_blank" rel="noreferrer">
+          {teacher.name}
+        </a>
+      </h1>
+      {bio ? <div className="director-bio">{bio}</div> : null}
       <div className="class-images">
         {teacher.classImages.map((image) => (
           <img key={image} src={`/images/${image}`} alt={`${teacher.name} class`} className="class-image" />
@@ -70,12 +105,30 @@ function DirectorDetailPage() {
   )
 }
 
-function VideoPage({ title, videos }) {
+function VideoFrame({ video, size = 'default' }) {
+  return (
+    <iframe
+      src={video.url}
+      title={video.title}
+      className={`video-frame video-frame--${size}`}
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerPolicy="strict-origin-when-cross-origin"
+      allowFullScreen
+    />
+  )
+}
+
+function VideoPage({ title, videos, featuredCount = 0 }) {
   const [query, setQuery] = useState('')
   const filtered = useMemo(
     () => videos.filter((video) => video.title.toLowerCase().includes(query.toLowerCase())),
     [query, videos],
   )
+
+  const featured =
+    featuredCount > 0 ? filtered.filter((video) => video.id <= featuredCount) : []
+  const rest =
+    featuredCount > 0 ? filtered.filter((video) => video.id > featuredCount) : filtered
 
   return (
     <section className="page">
@@ -87,19 +140,30 @@ function VideoPage({ title, videos }) {
         onChange={(event) => setQuery(event.target.value)}
         placeholder="Search video"
       />
-      <div className="video-grid">
-        {filtered.map((video) => (
-          <iframe
-            key={video.id}
-            src={video.url}
-            title={video.title}
-            className="video-frame"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          />
-        ))}
-      </div>
+      {featuredCount > 0 ? (
+        <>
+          {featured.length > 0 && (
+            <div className="video-grid video-grid-featured">
+              {featured.map((video) => (
+                <VideoFrame key={video.id} video={video} size="featured" />
+              ))}
+            </div>
+          )}
+          {rest.length > 0 && (
+            <div className="video-grid video-grid-compact">
+              {rest.map((video) => (
+                <VideoFrame key={video.id} video={video} size="compact" />
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="video-grid">
+          {filtered.map((video) => (
+            <VideoFrame key={video.id} video={video} />
+          ))}
+        </div>
+      )}
     </section>
   )
 }
@@ -213,6 +277,14 @@ function SiteHeader() {
             Home
           </NavLink>
           <NavLink to="/teachers">Directors</NavLink>
+          <a
+            className="nav-external"
+            href="https://www.peridance.com/moptop"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Information
+          </a>
           <NavLink to="/interviews">Interviews</NavLink>
           <NavLink to="/showcase">Showcase</NavLink>
           <NavLink to="/students">Students</NavLink>
@@ -246,7 +318,10 @@ function App() {
           <Route path="/teachers/:slug" element={<DirectorDetailPage />} />
           <Route path="/directors" element={<Navigate to="/teachers" replace />} />
           <Route path="/directors/:slug" element={<DirectorDetailPage />} />
-          <Route path="/interviews" element={<VideoPage title="Interviews" videos={interviews} />} />
+          <Route
+            path="/interviews"
+            element={<VideoPage title="Interviews" videos={interviews} featuredCount={2} />}
+          />
           <Route path="/showcase" element={<VideoPage title="Showcase" videos={showcaseVideos} />} />
           <Route path="/students" element={<StudentsPage />} />
           <Route path="/listen-here" element={<ListenHerePage />} />
