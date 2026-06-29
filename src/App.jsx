@@ -188,13 +188,23 @@ function StudentsPage() {
         <div key={year} className="student-year-group">
           <h2>{year}</h2>
           <div className="student-row">
-            {byYear[year].map((student) => (
-              <a key={student.id} href={student.instagram} target="_blank" rel="noreferrer" className="student-card">
-                <img src={`/images/${student.image}`} alt={student.name} />
-                <span>{student.name}</span>
-                <small>From {student.country}</small>
-              </a>
-            ))}
+            {byYear[year].map((student) => {
+              const CardTag = student.instagram ? 'a' : 'div'
+              const hasCountry = student.country && student.country.trim().toUpperCase() !== 'TBD'
+              return (
+                <CardTag
+                  key={student.id}
+                  className="student-card"
+                  {...(student.instagram
+                    ? { href: student.instagram, target: '_blank', rel: 'noreferrer' }
+                    : {})}
+                >
+                  <img src={`/images/${student.image}`} alt={student.name} />
+                  <span>{student.name}</span>
+                  {hasCountry ? <small>From {student.country}</small> : null}
+                </CardTag>
+              )
+            })}
           </div>
         </div>
       ))}
