@@ -330,7 +330,7 @@ function App() {
           <Route path="/directors/:slug" element={<DirectorDetailPage />} />
           <Route
             path="/interviews"
-            element={<VideoPage title="Interviews" videos={interviews} featuredCount={2} />}
+            element={<VideoPage title="Interviews" videos={interviews} />}
           />
           <Route path="/showcase" element={<VideoPage title="Showcase" videos={showcaseVideos} />} />
           <Route path="/students" element={<StudentsPage />} />

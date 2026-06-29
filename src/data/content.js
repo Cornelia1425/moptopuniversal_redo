@@ -62,38 +62,18 @@ export const teachers = [
 export const interviews = [
   {
     id: 1,
+    title: 'Link Interview',
+    url: 'https://www.youtube.com/embed/B-SIH-4t5xU',
+  },
+  {
+    id: 2,
     title: 'Interview with Cebo【Summer Breeze】',
     url: 'https://www.youtube.com/embed/qOYgtl0ttrU',
   },
   {
-    id: 2,
+    id: 3,
     title: 'Interview with Buddha Stretch【Summer Breeze】',
     url: 'https://www.youtube.com/embed/3TEaWcivDs4',
-  },
-  {
-    id: 3,
-    title: 'Stretch - Dance is social',
-    url: 'https://www.youtube.com/embed/rFhVxVkGnSU',
-  },
-  {
-    id: 4,
-    title: 'Stretch - Who inspired you',
-    url: 'https://www.youtube.com/embed/Jc6AHFlfAdQ',
-  },
-  {
-    id: 5,
-    title: 'Stretch - Why does it feel good',
-    url: 'https://www.youtube.com/embed/GjnZ2fAarsw',
-  },
-  {
-    id: 6,
-    title: 'Stretch - The future of hiphop dance',
-    url: 'https://www.youtube.com/embed/FhmGx8Q4Lzk',
-  },
-  {
-    id: 7,
-    title: 'Stretch - What is foundation',
-    url: 'https://www.youtube.com/embed/Je0S47ggbmM',
   },
 ]
 
