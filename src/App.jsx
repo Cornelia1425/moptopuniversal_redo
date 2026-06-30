@@ -191,6 +191,23 @@ function StudentsPage() {
             {byYear[year].map((student) => {
               const CardTag = student.instagram ? 'a' : 'div'
               const hasCountry = student.country && student.country.trim().toUpperCase() !== 'TBD'
+              const shouldAlignPhotoTop =
+                student.year === '2025' ||
+                student.name === 'Irina Lalciu' ||
+                student.name === 'Adrian Teodor Martin' ||
+                student.name === 'Adrian Martin'
+              const shouldNudgePhotoHigher =
+                student.name === 'Irina Lalciu' ||
+                student.name === 'Adrian Teodor Martin' ||
+                student.name === 'Adrian Martin'
+              const objectPosition =
+                student.name === 'Eva Garrote Roman'
+                  ? 'center center'
+                  : shouldNudgePhotoHigher
+                    ? 'center 20%'
+                    : shouldAlignPhotoTop
+                      ? 'center top'
+                      : undefined
               return (
                 <CardTag
                   key={student.id}
@@ -199,7 +216,11 @@ function StudentsPage() {
                     ? { href: student.instagram, target: '_blank', rel: 'noreferrer' }
                     : {})}
                 >
-                  <img src={`/images/${student.image}`} alt={student.name} />
+                  <img
+                    src={`/images/${student.image}`}
+                    alt={student.name}
+                    style={objectPosition ? { objectPosition } : undefined}
+                  />
                   <span>{student.name}</span>
                   {hasCountry ? <small>From {student.country}</small> : null}
                 </CardTag>
