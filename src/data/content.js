@@ -62,16 +62,21 @@ export const teachers = [
 export const interviews = [
   {
     id: 1,
+    title: 'MOPTOP Universal: Meet Director Buddha Stretch',
+    url: 'https://www.youtube.com/embed/rucBCuhxPws',
+  },
+  {
+    id: 2,
     title: 'Link Interview',
     url: 'https://www.youtube.com/embed/B-SIH-4t5xU',
   },
   {
-    id: 2,
+    id: 3,
     title: 'Interview with Cebo【Summer Breeze】',
     url: 'https://www.youtube.com/embed/qOYgtl0ttrU',
   },
   {
-    id: 3,
+    id: 4,
     title: 'Interview with Buddha Stretch【Summer Breeze】',
     url: 'https://www.youtube.com/embed/3TEaWcivDs4',
   },
